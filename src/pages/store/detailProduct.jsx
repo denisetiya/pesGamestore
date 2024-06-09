@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
   Carousel,
-  Textarea,
   Button,
   Dialog,
   DialogBody,
@@ -93,30 +92,18 @@ function DetailProduct() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center mx-4">
+    <div className="flex flex-col items-center justify-center mx-3">
       <motion.div
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <Carousel
-          className="max-w-[576px] max-h-[800px] rounded-xl"
-          navigation={({ setActiveIndex, activeIndex, length }) => (
-            <div className="absolute z-50 flex gap-2 bottom-4 left-2/4 -translate-x-2/4">
-              {new Array(length).fill("").map((_, i) => (
-                <span
-                  key={i}
-                  className={`block h-1 cursor-pointer rounded-2xl transition-all ${
-                    activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
-                  }`}
-                  onClick={() => setActiveIndex(i)}
-                />
-              ))}
-            </div>
-          )}
-        >
+  
           {data.picture && data.picture.includes("iframe") ? (
-            <div className="w-full h-80" dangerouslySetInnerHTML={{ __html: data.picture }} />
+            <div
+              className="w-full h-80"
+              dangerouslySetInnerHTML={{ __html: data.picture }}
+            />
           ) : (
             <iframe
               onClick={() => window.open(data.picture, "_self")}
@@ -124,18 +111,18 @@ function DetailProduct() {
               className="object-cover w-full h-96"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "https://via.placeholder.com/150"; // Fallback image
+                e.target.src = "https://via.placeholder.com/150"; 
               }}
             />
           )}
-        </Carousel>
+       
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="mt-10"
+        className="flex flex-col justify-center mt-10"
       >
         <div>
           <p>
@@ -145,13 +132,16 @@ function DetailProduct() {
         <div>_____________________________________</div>
         <br />
         <b>Description</b>
-        <Textarea
-            className="h-80 bg-none"
-            disabled={true}
-            type="text"
-            label="Description"
-            value={data.desc}
-          ></Textarea>
+        <textarea
+          name=""
+          id=""
+          cols="30"
+          rows="15"
+          disabled={true}
+          type="text"
+          label="Description"
+          value={data.desc}
+        ></textarea>
       </motion.div>
 
       <motion.div
