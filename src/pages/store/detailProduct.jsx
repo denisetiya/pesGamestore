@@ -133,6 +133,7 @@ function DetailProduct() {
         <br />
         <b>Description</b>
         <textarea
+          className="p-4"
           name=""
           id=""
           cols="30"
