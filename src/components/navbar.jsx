@@ -244,7 +244,7 @@ const googleLogin = useGoogleLogin({
           }
         
           
-          <Link to={'https://t.me/squizy3'}>
+          <Link to={'https://t.me/bosspesalt'}>
             <MenuItem onClick={closeMenu}>
               <Typography
                 as="span"

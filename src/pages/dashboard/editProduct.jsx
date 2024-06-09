@@ -60,6 +60,18 @@ const EditProduct = () => {
     }
   };
 
+  const handleSold = async () => {
+    try {
+      const response = await axios.put(import.meta.env.VITE_API_URL + "/sold/" + id);
+      if (response.status === 200) {
+        setUploadStatus2(true);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
  
 
@@ -140,6 +152,9 @@ const EditProduct = () => {
           ></Textarea>
           <Button variant="outlined" ripple onClick={handleSave}>
             Save
+          </Button>
+          <Button variant="outlined" ripple onClick={handleSold}>
+            Sold Out
           </Button>
         </div>
 

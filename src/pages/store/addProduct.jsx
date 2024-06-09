@@ -46,7 +46,7 @@ const AddProduct = () => {
         // setId(response.data.data.id);
         // setUploadStatus(false);
         setUploadStatus2(true);
-        navigate('/')
+        navigate('/dashboard')
       }
     } catch (error) {
       console.log(error);

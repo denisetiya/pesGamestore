@@ -89,20 +89,24 @@ function Cart() {
             <div>
               <p>Account {index}</p>
             </div>
-            <Button
-              className="w-full my-3"
-              onClick={() => navigate(`/detailShow/${item.aid}`)}
-            >Detail</Button>
+ 
             <p>Email : {item.uem}</p>
-            <div className="flex gap-3 mt-4">              
-              <Button
+            <div className="flex gap-3 mt-4">
+        {console.log(data)}  
+             <Button
+              className="w-full my-3"
+              onClick={() => navigate(`/detail/${item.aid}`)}
+            >Detail</Button>            
+              {/* <Button
                 variant="outlined"
                 ripple
-                onClick={() => navigate(`/Buy/${item.aid}`)}
-              >Buy</Button>
+                onClick={() => window.open(item.picture, "_blank")}
+              >Buy</Button> */}
               <Button
                 variant="outlined"
                 color="red"
+                ripple
+                className="w-full my-3"
                 onClick={() => deleteCart(item.id)}
               >Delete</Button>
             </div>
