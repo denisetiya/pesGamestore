@@ -57,13 +57,11 @@ export function PricingCard() {
     navigate(`/detail/${id}`);
   };
 
-  const handleBuy = async (id) => {
-    if (!Cookie.get("username") && !Cookie.get("email")) {
-      setOpen(true);
-    } else {
-      navigate(`/Buy/${id}`);
-    }
+  const handleBuy = async (link) => {
+    window.open(link, "_blank");
+
   };
+
 
   const handleCart = async (id) => {
     if (!Cookie.get("username") && !Cookie.get("email")) {
@@ -218,7 +216,7 @@ export function PricingCard() {
                       </button>
                       <Button
                         disabled={item.status === "no payment" ? false : true}
-                        onClick={() => handleBuy(item.id)}
+                        onClick={() => handleBuy(item.picture)}
                         size="sm"
                         variant="gradient"
                         className="hover:scale-[1.02] focus:scale-[1.02] active:scale-100"

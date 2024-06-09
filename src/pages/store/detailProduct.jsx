@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
-  Carousel,
+
   Button,
   Dialog,
   DialogBody,
@@ -118,6 +118,7 @@ function DetailProduct() {
        
       </motion.div>
 
+
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -133,7 +134,7 @@ function DetailProduct() {
         <br />
         <b>Description</b>
         <textarea
-          className="p-4"
+        className="p-4 "
           name=""
           id=""
           cols="30"
