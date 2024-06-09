@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Textarea, Button, Typography } from "@material-tailwind/react";
+import { Input, Textarea, Button} from "@material-tailwind/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 
 const AddProduct = () => {
 
-  const [uploadStatus, setUploadStatus] = useState(true);
+  // const [uploadStatus, setUploadStatus] = useState(true);
   const [uploadStatus2, setUploadStatus2] = useState(false);
   const [price, setPrice] = useState(0);
   const [email, setEmail] = useState("");
@@ -19,13 +19,15 @@ const AddProduct = () => {
   const [detail4, setDetail4] = useState("");
   const [detail5, setDetail5] = useState("");
   const [desc, setDesc] = useState("");
-  const [id, setId] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [showTips, setShowTips] = useState('hidden');
+  // const [id, setId] = useState("");
+  const [picture, setPicture] = useState("")
+  // const [selectedImage, setSelectedImage] = useState(null);
+  // const [showTips, setShowTips] = useState('hidden');
   const navigate = useNavigate();
   
 
   const handleSave = async () => {
+    setUploadStatus2(false)
     try {
       const response = await axios.post(import.meta.env.VITE_API_URL + "/add", {
         price,
@@ -34,50 +36,54 @@ const AddProduct = () => {
         detail3,
         detail4,
         detail5,
+        picture,
         email,
         password,
         desc,
       });
 
       if (response.status === 200) {
-        setId(response.data.data.id);
-        setUploadStatus(false);
+        // setId(response.data.data.id);
+        // setUploadStatus(false);
         setUploadStatus2(true);
+        navigate('/')
       }
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error);
+    } finally {
+      setUploadStatus2(true)
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedImage(file);
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setSelectedImage(file);
+  // };
 
-  const handleUpload = () => {
-    const formData = new FormData();
-    formData.append("picture", selectedImage);
+  // const handleUpload = () => {
+  //   const formData = new FormData();
+  //   formData.append("picture", selectedImage);
 
-    axios
-      .post(import.meta.env.VITE_API_URL + "/add/" + id, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setSelectedImage(null);
-          setShowTips('block');
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  //   axios
+  //     .post(import.meta.env.VITE_API_URL + "/add/" + id, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         setSelectedImage(null);
+  //         setShowTips('block');
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
 
-  const handleConfirm = () => {
-     navigate("/");
-  }
+  // const handleConfirm = () => {
+  //    navigate("/");
+  // }
 
   return (
     <div className="flex justify-center w-full ">
@@ -141,18 +147,26 @@ const AddProduct = () => {
             maxLength={20}
             onChange={(e) => setDetail5(e.target.value)}
           />
+          <Input
+            disabled={uploadStatus2}
+            type="text"
+            label="Image Link"
+            onChange={(e) => setPicture(e.target.value)}
+          />
+          
           <Textarea
             disabled={uploadStatus2}
             type="text"
             label="Description"
             onChange={(e) => setDesc(e.target.value)}
           ></Textarea>
+          
           <Button variant="outlined" ripple onClick={handleSave}>
             Save
           </Button>
         </motion.div>
 
-        <div className="ml-6 flex flex-col gap-5 w-[90%] lg:w-[50%]">
+        {/* <div className="ml-6 flex flex-col gap-5 w-[90%] lg:w-[50%]">
           <p className="text-xl font-bold">Images in Showcase</p>
           <div className="p-8 bg-gray-100 rounded-lg shadow-md">
             <h2 className="mb-4 text-xl font-semibold">Upload Gambar</h2>
@@ -207,7 +221,7 @@ const AddProduct = () => {
               
             
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Carousel, Button, Dialog,DialogBody,DialogFooter,DialogHeader } from "@material-tailwind/react";
+import {
+  Carousel,
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
 import { ShoppingCart } from "@phosphor-icons/react";
 import Lottie from "lottie-react";
 import { motion } from "framer-motion";
@@ -13,7 +20,6 @@ function DetailProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [picture, setPicture] = useState([]);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,8 +37,7 @@ function DetailProduct() {
 
         if (response.status === 200) {
           setData(response.data.data);
-          setPicture(response.data.data.picture);
-         
+          console.log(response.data.data);
         } else {
           throw new Error("No data found");
         }
@@ -44,6 +49,7 @@ function DetailProduct() {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleBuy = async (id) => {
@@ -104,19 +110,15 @@ function DetailProduct() {
             </div>
           )}
         >
-          {picture.map((item) => (
-            <img
-              key={item.id}
-              onClick={() =>
-                window.open(
-                  `${import.meta.env.VITE_API_URL}/accountPicture/${item.picture}`,
-                  "_self"
-                )
-              }
-              src={`${import.meta.env.VITE_API_URL}/accountPicture/${item.picture}`}
-              className="object-cover w-full h-full"
-            />
-          ))}
+          <img
+            onClick={() => window.open(data.picture, "_self")}
+            src={data.picture}
+            className="object-cover w-full h-full"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://via.placeholder.com/150"; // Fallback image
+            }}
+          />
         </Carousel>
       </motion.div>
 
@@ -144,7 +146,7 @@ function DetailProduct() {
         className="flex items-center w-full gap-3 mt-6 md:w-[80%] lg:w-[55%] 2xl:w-[35%] 3xl:w-[25%]"
       >
         <button onClick={() => handleCart(data.id)}>
-          <ShoppingCart size={60} />  
+          <ShoppingCart size={60} />
         </button>
         <Button
           size="sm"

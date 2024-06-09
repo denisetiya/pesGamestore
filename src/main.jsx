@@ -8,13 +8,16 @@ import Footer from "./components/footer";
 
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import {motion} from "framer-motion"
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
+      <GoogleOAuthProvider clientId={clientId}>
         <motion.div 
         initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
@@ -33,6 +36,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </div>
           </div>
         </div>
+        </GoogleOAuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>

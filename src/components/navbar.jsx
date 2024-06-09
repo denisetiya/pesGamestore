@@ -17,7 +17,7 @@ import {
   Collapse,
 } from "@material-tailwind/react";
 import { ChevronDownIcon, Bars2Icon } from "@heroicons/react/24/solid";
-
+import { useGoogleLogin } from '@react-oauth/google';
 import {
   ShoppingCart,
   Tag,
@@ -105,21 +105,45 @@ function ProfileMenu() {
     }
   };
 
-  // login google
-  const handleLoginGoogle = async () => {
-    setLoading(true);
+
+// login google
+const googleLogin = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
     try {
-      window.open(import.meta.env.VITE_API_URL + "/loginGoogle", "_self");
-      if (Cookie.get("username") && Cookie.get("email")) {
-        setLoading(false);
+      const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: {
+          Authorization: `Bearer ${tokenResponse.access_token}`,
+        },
+      }).then(res => res.json());
+
+      const sendDB = await axios.post(
+        import.meta.env.VITE_API_URL + "/loginGoogle",
+        {
+          email: userInfo.email,
+          name: userInfo.name,
+          picture: userInfo.picture,
+        }
+      ) 
+
+      if (sendDB.status === 200) {
+        Cookie.set("username", userInfo.name);
+        Cookie.set("email", userInfo.email);
+        Cookie.set("picture", userInfo.picture);
         navigate("/");
-        setOpen((cur) => !cur);
+        setOpen(false);
+      } else {
+        throw new Error(sendDB.data.message);
       }
+
+     
     } catch (error) {
-      setLoading(false);
-      return setMessageResponse(error.response.data.message);
+      setMessageResponse("Google login failed");
     }
-  };
+  },
+  onError: () => {
+    setMessageResponse("Google login failed");
+  },
+});
 
   // logout session
   const handleLogout = () => {
@@ -194,25 +218,31 @@ function ProfileMenu() {
               </MenuItem>
             </Link>
           ) : null}
-          <Link
-            to={
-              Cookie.get("email") == import.meta.env.VITE_EMAIL_ADMIN
-                ? "/order-list"
-                : "/order"
-            }
-          >
-            <MenuItem onClick={closeMenu}>
-              <Typography
-                as="span"
-                variant="small"
-                className="flex items-center gap-1 font-normal"
-              >
-                <Info size={22} />
-                <p>Order</p>
-                <hr />
-              </Typography>
-            </MenuItem>
-          </Link>
+          {
+            Cookie.get('email') == import.meta.env.VITE_EMAIL_ADMIN ? 
+            (
+              <Link
+              to={
+                Cookie.get("email") == import.meta.env.VITE_EMAIL_ADMIN
+                  ? "/order-list"
+                  : "/order"
+              }
+            >
+              <MenuItem onClick={closeMenu}>
+                <Typography
+                  as="span"
+                  variant="small"
+                  className="flex items-center gap-1 font-normal"
+                >
+                  <Info size={22} />
+                  <p>Order</p>
+                  <hr />
+                </Typography>
+              </MenuItem>
+            </Link>
+            ) : null
+          }
+        
           
           <Link to={'https://t.me/squizy3'}>
             <MenuItem onClick={closeMenu}>
@@ -316,7 +346,7 @@ function ProfileMenu() {
               variant="outlined"
               className="mt-2"
               ripple
-              onClick={handleLoginGoogle}
+              onClick={googleLogin}
               fullWidth
             >
               Google Login
@@ -418,7 +448,7 @@ export function ComplexNavbar() {
             onClick={handleHome}
             className="mr-4 ml-2 cursor-pointer py-1.5 font-extrabold"
           >
-            PES Store
+            PES GameStore
           </Typography>
 
           <div className="hidden lg:block">

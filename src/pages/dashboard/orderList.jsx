@@ -169,7 +169,7 @@ function OrderList() {
           ))}
         </div>
       ) : (
-        <p>No order found</p>
+        <p className="flex items-center justify-center text-gray-500 text-bold">No order found</p>
       )}
     </div>
   );
