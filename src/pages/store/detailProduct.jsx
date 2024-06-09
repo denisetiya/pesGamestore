@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
   Carousel,
+  Textarea,
   Button,
   Dialog,
   DialogBody,
@@ -14,11 +15,11 @@ import Lottie from "lottie-react";
 import { motion } from "framer-motion";
 import Loading from "../../assets/lottie/loading.json";
 import Cookie from "js-cookie";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 function DetailProduct() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
@@ -32,12 +33,11 @@ function DetailProduct() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          import.meta.env.VITE_API_URL + `/show/${id}`
+          `${import.meta.env.VITE_API_URL}/show/${id}`
         );
 
         if (response.status === 200) {
           setData(response.data.data);
-          console.log(response.data.data);
         } else {
           throw new Error("No data found");
         }
@@ -52,29 +52,34 @@ function DetailProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const handleBuy = async (id) => {
-    if (!Cookie.get("username") && !Cookie.get("email")) {
-      setOpen(true);
-    } else {
-      navigate(`/Buy/${id}`);
-    }
+  const handleBuy = async (link) => {
+    window.open(link, "_blank");
+    // if (!Cookie.get("username") && !Cookie.get("email")) {
+    //   setOpen(true);
+    // } else {
+    //   navigate(`/Buy/${id}`);
+    // }
   };
 
   const handleCart = async (id) => {
     if (!Cookie.get("username") && !Cookie.get("email")) {
       setOpen(true);
     } else {
-      const response = await axios.post(
-        import.meta.env.VITE_API_URL + "/cart",
-        {
-          uem: Cookie.get("email"),
-          aid: id,
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/cart`,
+          {
+            uem: Cookie.get("email"),
+            aid: id,
+          }
+        );
+        if (response.status === 200) {
+          setOpen2(true);
+        } else {
+          console.log(response.data.message);
         }
-      );
-      if (response.status === 200) {
-        setOpen2(true);
-      } else {
-        console.log(response.data.message);
+      } catch (error) {
+        console.log(error.message);
       }
     }
   };
@@ -95,13 +100,13 @@ function DetailProduct() {
         transition={{ duration: 0.8 }}
       >
         <Carousel
-          className="max-w-[576px] max-h-[360px] rounded-xl"
+          className="max-w-[576px] max-h-[800px] rounded-xl"
           navigation={({ setActiveIndex, activeIndex, length }) => (
             <div className="absolute z-50 flex gap-2 bottom-4 left-2/4 -translate-x-2/4">
               {new Array(length).fill("").map((_, i) => (
                 <span
                   key={i}
-                  className={`block h-1 cursor-pointer rounded-2xl transition-all content-[''] ${
+                  className={`block h-1 cursor-pointer rounded-2xl transition-all ${
                     activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
                   }`}
                   onClick={() => setActiveIndex(i)}
@@ -110,15 +115,19 @@ function DetailProduct() {
             </div>
           )}
         >
-          <img
-            onClick={() => window.open(data.picture, "_self")}
-            src={data.picture}
-            className="object-cover w-full h-full"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/150"; // Fallback image
-            }}
-          />
+          {data.picture && data.picture.includes("iframe") ? (
+            <div className="w-full h-80" dangerouslySetInnerHTML={{ __html: data.picture }} />
+          ) : (
+            <iframe
+              onClick={() => window.open(data.picture, "_self")}
+              src={data.picture}
+              className="object-cover w-full h-96"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/150"; // Fallback image
+              }}
+            />
+          )}
         </Carousel>
       </motion.div>
 
@@ -136,14 +145,20 @@ function DetailProduct() {
         <div>_____________________________________</div>
         <br />
         <b>Description</b>
-        <p className="flex flex-wrap max-w-2xl">{data.desc}</p>
+        <Textarea
+            className="h-80 bg-none"
+            disabled={true}
+            type="text"
+            label="Description"
+            value={data.desc}
+          ></Textarea>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.8 }}
-        className="flex items-center w-full gap-3 mt-6 md:w-[80%] lg:w-[55%] 2xl:w-[35%] 3xl:w-[25%]"
+        className="flex items-center w-[80%] gap-3 mt-6 md:w-[80%] lg:w-[55%] 2xl:w-[35%] 3xl:w-[25%]"
       >
         <button onClick={() => handleCart(data.id)}>
           <ShoppingCart size={60} />
@@ -154,7 +169,7 @@ function DetailProduct() {
           className="hover:scale-[1.02] focus:scale-[1.02] active:scale-100 w-full"
           ripple
           fullWidth={true}
-          onClick={() => handleBuy(data.id)}
+          onClick={() => handleBuy(data.picture)}
         >
           Buy Now
         </Button>

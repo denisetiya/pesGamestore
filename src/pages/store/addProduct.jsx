@@ -116,35 +116,35 @@ const AddProduct = () => {
             disabled={uploadStatus2}
             type="text"
             label="highlight 1"
-            maxLength={20}
+            maxLength={26}
             onChange={(e) => setDetail1(e.target.value)}
           />
           <Input
             disabled={uploadStatus2}
             type="text"
             label="highlight 2"
-            maxLength={20}
+            maxLength={26}
             onChange={(e) => setDetail2(e.target.value)}
           />
           <Input
             disabled={uploadStatus2}
             type="text"
             label="highlight 3"
-            maxLength={20}
+            maxLength={26}
             onChange={(e) => setDetail3(e.target.value)}
           />
           <Input
             disabled={uploadStatus2}
             type="text"
             label="highlight 4"
-            maxLength={20}
+            maxLength={26}
             onChange={(e) => setDetail4(e.target.value)}
           />
           <Input
             disabled={uploadStatus2}
             type="text"
             label="highlight 5"
-            maxLength={20}
+            maxLength={26}
             onChange={(e) => setDetail5(e.target.value)}
           />
           <Input
